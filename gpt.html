@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Focus Clock</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: #0b0f14; }
+    video { object-fit: cover; }
+  </style>
+</head>
+<body class="text-gray-200 font-sans overflow-hidden">
+
+  <!-- Background Video -->
+  <video id="bgVideo" autoplay muted loop class="fixed inset-0 w-full h-full hidden">
+    <source src="3.mp4" type="video/mp4">
+  </video>
+
+  <!-- Overlay -->
+  <div class="absolute inset-0 bg-black/60"></div>
+
+  <!-- Main Content -->
+  <div class="relative z-10 flex flex-col items-center justify-center h-screen text-center px-6">
+
+    <h1 class="text-5xl font-semibold tracking-wide mb-12 text-gray-300">Focus Clock</h1>
+
+    <!-- Current Time -->
+    <div id="clock" class="text-7xl font-light mb-16 tracking-widest"></div>
+
+    <!-- Countdown Blocks -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 text-center">
+      <div>
+        <p class="text-gray-400 text-lg mb-2">Lunch in</p>
+        <div id="lunchTimer" class="text-5xl font-medium"></div>
+      </div>
+      <div>
+        <p class="text-gray-400 text-lg mb-2">Go Home in</p>
+        <div id="homeTimer" class="text-5xl font-medium"></div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="absolute bottom-6 right-6 flex items-center gap-4">
+      <button onclick="toggleVideo()" class="w-10 h-10 flex items-center justify-center border border-gray-600 rounded-xl hover:bg-gray-800 transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+        </svg>
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    function formatTime(ms) {
+      const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+      const h = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+      const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+      const s = String(totalSeconds % 60).padStart(2, '0');
+      return `${h}:${m}:${s}`;
+    }
+
+    function updateClock() {
+      const now = new Date();
+
+      // Current time
+      document.getElementById('clock').textContent = now.toLocaleTimeString();
+
+      // Lunch time (1:00 PM)
+      const lunch = new Date();
+      lunch.setHours(13, 0, 0, 0);
+
+      // Home time (4:20 PM)
+      const home = new Date();
+      home.setHours(16, 20, 0, 0);
+
+      const lunchDiff = lunch - now;
+      const homeDiff = home - now;
+
+      document.getElementById('lunchTimer').textContent = formatTime(lunchDiff);
+      document.getElementById('homeTimer').textContent = formatTime(homeDiff);
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function toggleVideo() {
+      const video = document.getElementById('bgVideo');
+      video.classList.toggle('hidden');
+    }
+  </script>
+
+</body>
+</html>
